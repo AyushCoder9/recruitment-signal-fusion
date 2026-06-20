@@ -1,0 +1,35 @@
+# ---- secrets / env ----
+.env
+*.key
+*.pem
+
+# ---- python ----
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ipynb_checkpoints/
+.mypy_cache/
+.ruff_cache/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+
+# ---- challenge data (provided; kept outside the repo, pointed to by config.yaml) ----
+# NB: the leading "[" is escaped because gitignore treats [...] as a glob char-class.
+\[PUB\] India_runs_data_and_ai_challenge/
+
+# ---- provided template (not ours to redistribute) ----
+Idea Submission Template _ Redrob.pdf
+
+# ---- generated submission deck (built locally from scripts/make_deck.py) ----
+Redrob_IndiaRuns_Submission_NullSet.pdf
+
+# ---- private demo run-sheet (not part of the public deliverable) ----
+DEMO_SCRIPT.md
+
+# ---- large precomputed artifact (161MB; regenerate with `make precompute`) ----
+artifacts/embeddings.npz

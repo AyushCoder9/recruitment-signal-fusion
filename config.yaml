@@ -1,0 +1,83 @@
+# Redrob ranker config. Single source of truth for paths, models, knobs.
+
+paths:
+  # Challenge data lives outside the repo (465MB jsonl not copied).
+  data_dir: "[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge"
+  candidates_jsonl: "${data_dir}/candidates.jsonl"
+  sample_candidates: "${data_dir}/sample_candidates.json"
+  sample_submission: "${data_dir}/sample_submission.csv"
+  candidate_schema: "${data_dir}/candidate_schema.json"
+  validator: "${data_dir}/validate_submission.py"
+  artifacts_dir: "artifacts"
+
+artifacts:
+  embeddings: "artifacts/embeddings.npz"
+  jd_query: "artifacts/jd_query.npz"
+  bm25: "artifacts/bm25.pkl"
+  features: "artifacts/features.parquet"
+  labels: "artifacts/labels.parquet"
+  ranker: "artifacts/lgbm_ranker.txt"
+  calibration: "artifacts/calibration.yaml"
+
+embedding:
+  # bge-small-en-v1.5: 33M, 384d, CPU ~112 docs/s -> ~15min/100k, fully reliable.
+  # NOTE: MPS STALLS on the large 100k encode for bigger models (BGE-M3 and even bge-base
+  # hang at scale via sentence-transformers), so we embed on CPU in chunks. Data is English;
+  # dense-sim is 1 of 59 features (role/skills dominate), so bge-small is plenty. Swap here
+  # to A/B BGE-M3 / gte-base / Qwen3-Embedding on a real GPU (Colab) via the harness.
+  model: "BAAI/bge-small-en-v1.5"
+  dim: 384
+  max_seq_len: 256
+  batch_size: 128
+  device: "cpu"              # cpu is reliable here; mps stalls on the 100k batch
+  chunk_size: 5000           # embed + log in chunks for observability/robustness
+  normalize: true
+
+bm25:
+  k1: 1.5
+  b: 0.75
+
+llm_judge:
+  # Free judge stack across TWO providers (each model = its own daily quota bucket), so the
+  # combined daily label budget is the SUM. Groq caps DAILY tokens (TPD=100k/model ->
+  # ~150 labels/model/day at the compact prompt); Gemini caps DAILY REQUESTS (flash-lite
+  # ~1000/day @15RPM, flash ~250/day @10RPM). Gemini 2.5 are reasoning models -> we DISABLE
+  # thinking (thinking_budget=0) so they emit clean JSON fast and don't truncate. Dropped:
+  # gpt-oss-* (break json_object -> silent drops), gemini-2.0-* (free quota=0). When a
+  # model's daily quota exhausts it bows out and the rest continue; resumable across days.
+  # Cerebras gpt-oss-120b is the workhorse (~1M free tokens/day, fast); Groq 3 models +
+  # Gemini 2 (tiny 20 req/day each) top it up. Each = its own daily quota bucket.
+  models:
+    - "cerebras:gpt-oss-120b"
+    - "groq:meta-llama/llama-4-scout-17b-16e-instruct"
+    - "groq:llama-3.1-8b-instant"
+    - "groq:llama-3.3-70b-versatile"
+    - "gemini:gemini-2.5-flash-lite"
+    - "gemini:gemini-2.5-flash"
+  sample_size: 1500
+  workers_per_model: 2
+  temperature: 0.0
+
+ranker:
+  enabled: true              # false -> rubric-only graceful degradation
+  objective: "lambdarank"
+  num_leaves: 31
+  learning_rate: 0.05
+  n_estimators: 500
+  val_fraction: 0.2
+
+ensemble:
+  blend_lgbm_weight: 0.6     # fit_raw = w*lgbm + (1-w)*rubric  (tuned in Phase 7)
+
+modifiers:
+  # availability/location are JD 'modifiers' on the skill-match score.
+  availability_clamp: [0.35, 1.10]
+  location_range: [0.45, 1.05]
+  offtarget_gate: 0.15        # hard JD disqualifier (off-target function, no relevant history)
+  honeypot_gate: 0.03         # hard — internal timeline impossibility
+
+determinism:
+  seed: 42
+
+# Phase 0: max(last_active_date) across pool.
+reference_now: "2026-05-27"
