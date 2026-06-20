@@ -1,0 +1,109 @@
+{
+  "n_candidates": 100000,
+  "reference_now": "2026-05-27",
+  "yoe_median": 6.8,
+  "yoe_in_band_5_9_pct": 34.4,
+  "india_pct": 75.1,
+  "role_buckets": {
+    "target": 7155,
+    "offtarget": 57317,
+    "neutral": 35528
+  },
+  "adv_expert_zero_dur_pct": 0.0,
+  "services_any_pct": 61.5,
+  "services_all_pct": 9.7,
+  "github_neg1_pct": 64.6,
+  "offer_neg1_pct": 59.6,
+  "honeypots_suspected": 59,
+  "honeypot_examples": [
+    {
+      "id": "CAND_0003430",
+      "title": "Business Analyst",
+      "reasons": [
+        "yoe>1.2yr_span"
+      ]
+    },
+    {
+      "id": "CAND_0005291",
+      "title": "Business Analyst",
+      "reasons": [
+        "date_mismatch(role gap=32 vs dur=11)",
+        "yoe>2.7yr_span"
+      ]
+    },
+    {
+      "id": "CAND_0007353",
+      "title": "Frontend Engineer",
+      "reasons": [
+        "date_mismatch(role gap=32 vs dur=166)",
+        "role_dur>9.9yoe"
+      ]
+    },
+    {
+      "id": "CAND_0007413",
+      "title": "Business Analyst",
+      "reasons": [
+        "date_mismatch(role gap=42 vs dur=16)",
+        "yoe>3.5yr_span"
+      ]
+    },
+    {
+      "id": "CAND_0008960",
+      "title": "Graphic Designer",
+      "reasons": [
+        "date_mismatch(role gap=20 vs dur=171)",
+        "role_dur>10.3yoe"
+      ]
+    },
+    {
+      "id": "CAND_0010294",
+      "title": ".NET Developer",
+      "reasons": [
+        "date_mismatch(role gap=18 vs dur=144)",
+        "role_dur>8.0yoe"
+      ]
+    },
+    {
+      "id": "CAND_0010770",
+      "title": "Recommendation Systems Engineer",
+      "reasons": [
+        "yoe>7.1yr_span"
+      ]
+    },
+    {
+      "id": "CAND_0013536",
+      "title": "Applied ML Engineer",
+      "reasons": [
+        "yoe>4.6yr_span"
+      ]
+    }
+  ],
+  "sample_sub_offtarget": 59,
+  "sample_sub_nonindia": 18,
+  "services_company_list": [
+    "accenture",
+    "birlasoft",
+    "capgemini",
+    "coforge",
+    "cognizant",
+    "deloitte",
+    "dxc",
+    "hcl",
+    "hexaware",
+    "ibm",
+    "infosys",
+    "l&t",
+    "larsen",
+    "lti",
+    "ltimindtree",
+    "mahindra",
+    "mindtree",
+    "mphasis",
+    "ntt data",
+    "persistent",
+    "tata consultancy",
+    "tcs",
+    "tech mahindra",
+    "wipro"
+  ]
+}
