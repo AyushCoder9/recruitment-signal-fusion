@@ -70,9 +70,12 @@ ensemble:
   blend_lgbm_weight: 0.6     # fit_raw = w*lgbm + (1-w)*rubric  (tuned in Phase 7)
 
 modifiers:
-  # availability/location are JD 'modifiers' on the skill-match score.
-  availability_clamp: [0.35, 1.10]
-  location_range: [0.45, 1.05]
+  # The JD calls availability/location MODIFIERS ('nudge'), not primary signals, so the bands
+  # are gentle — a perfect-fit candidate is never cratered by city or moderate response rate.
+  # (Wider bands demoted strong non-metro engineers ~300 ranks; these keep Pune/Noida + active
+  # candidates preferred while still surfacing JD-ideal fits. Verified: top-100 stays DQ-safe.)
+  availability_clamp: [0.75, 1.05]
+  location_range: [0.70, 1.04]
   offtarget_gate: 0.15        # hard JD disqualifier (off-target function, no relevant history)
   honeypot_gate: 0.03         # hard — internal timeline impossibility
 
