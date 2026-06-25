@@ -53,12 +53,18 @@ def _checks(c: Candidate, ref_now: date):
             reasons.append(f"role_dur({dur}mo)>yoe({yoe})")  # hard
 
     # YOE vs career span — claiming far more experience than the elapsed career span is a
-    # classic honeypot.
+    # classic honeypot. BUT a senior with an old degree who simply doesn't list early jobs is
+    # legitimate, so we SUPPRESS the flag when education supports the claim (years since the
+    # earliest graduation can account for the stated yoe). This keeps the planted timeline
+    # traps while no longer flooring genuinely strong senior candidates.
+    grad_years = [e.end_year for e in c.education if e.end_year]
+    earliest_grad = min(grad_years) if grad_years else None
+    edu_supports = earliest_grad is not None and (ref_now.year - earliest_grad) + 1.0 >= yoe
     if yoe > 0 and span_min and span_max:
         span_yrs = months_between(span_min, span_max) / 12.0
-        if span_yrs + 1.5 < yoe:  # more exp than elapsed career span
+        if span_yrs + 1.5 < yoe and not edu_supports:  # more exp than elapsed, unexplained
             reasons.append(f"yoe({yoe})>span({round(span_yrs,1)}y)")  # hard
-        elif span_yrs + 0.75 < yoe:
+        elif span_yrs + 0.75 < yoe and not edu_supports:
             soft += 0.3
         # sum of durations wildly exceeds span (impossible heavy overlap)
         if total_dur > (months_between(span_min, span_max) or 0) * 1.6 + 12:
