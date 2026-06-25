@@ -25,6 +25,13 @@ def main():
     labels_path = resolve_path(cfg["artifacts"]["labels"])
     labels = pd.read_parquet(labels_path)
     y = labels["tier"].reindex(feat.index).dropna().astype(int)
+    # Consistency override: where our high-precision timeline check proves an internal
+    # impossibility (a planted honeypot), the LLM judge was fooled by impressive companies —
+    # the math doesn't lie, so we correct those labels to tier 0 before distillation.
+    hp = feat["honeypot_flag"].reindex(y.index).fillna(0) > 0
+    n_corr = int((hp & (y > 0)).sum())
+    y = y.where(~hp, 0)
+    print(f"honeypot label-override: corrected {n_corr} LLM-mislabeled timeline traps -> tier 0")
     print(f"labeled candidates: {len(y)}   tier dist: {y.value_counts().sort_index().to_dict()}")
 
     cols = ranker.feature_columns(feat)
