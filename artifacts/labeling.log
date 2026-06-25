@@ -1,0 +1,42 @@
+stratified sample: 1492 candidates
+loaded 1492 candidate objects
+already labeled: 562  to label: 996
+  [quota exhausted] groq:llama-3.3-70b-versatile bows out
+  [quota exhausted] gemini:gemini-2.5-flash-lite bows out
+  [quota exhausted] gemini:gemini-2.5-flash bows out
+  processed 25 ok=25 (queue~966)
+  processed 50 ok=50 (queue~941)
+  processed 75 ok=75 (queue~916)
+  processed 100 ok=100 (queue~891)
+  processed 125 ok=125 (queue~866)
+  processed 150 ok=150 (queue~841)
+  processed 175 ok=175 (queue~816)
+  processed 200 ok=200 (queue~791)
+  [quota exhausted] groq:meta-llama/llama-4-scout-17b-16e-instruct bows out
+  processed 225 ok=225 (queue~768)
+  processed 250 ok=250 (queue~743)
+  processed 275 ok=275 (queue~718)
+  processed 300 ok=300 (queue~693)
+  processed 325 ok=325 (queue~668)
+  processed 350 ok=350 (queue~643)
+  processed 375 ok=375 (queue~618)
+  processed 400 ok=400 (queue~593)
+  processed 425 ok=425 (queue~568)
+  processed 450 ok=450 (queue~543)
+  processed 475 ok=475 (queue~518)
+  processed 500 ok=500 (queue~493)
+  processed 525 ok=525 (queue~468)
+  processed 550 ok=550 (queue~443)
+  processed 575 ok=575 (queue~418)
+  processed 600 ok=600 (queue~393)
+  processed 625 ok=625 (queue~368)
+  processed 650 ok=650 (queue~343)
+  processed 675 ok=675 (queue~318)
+  processed 700 ok=700 (queue~293)
+  [quota exhausted] groq:llama-3.1-8b-instant bows out
+  processed 725 ok=725 (queue~270)
+  processed 750 ok=750 (queue~245)
+  processed 775 ok=775 (queue~220)
+  processed 800 ok=800 (queue~195)
+  processed 825 ok=825 (queue~170)
+  processed 850 ok=850 (queue~145)

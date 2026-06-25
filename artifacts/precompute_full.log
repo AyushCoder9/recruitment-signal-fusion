@@ -1,0 +1,40 @@
+[ 410.3s] parsed + featurized 100,000 candidates
+[ 411.5s] loading embedding model BAAI/bge-small-en-v1.5 ...
+[ 421.9s] embedding 100,000 on device=cpu in chunks ...
+[ 518.4s]   embedded 5,000/100,000
+[ 613.8s]   embedded 10,000/100,000
+[ 708.1s]   embedded 15,000/100,000
+[ 809.2s]   embedded 20,000/100,000
+[ 906.9s]   embedded 25,000/100,000
+[1005.1s]   embedded 30,000/100,000
+[1110.2s]   embedded 35,000/100,000
+[1217.5s]   embedded 40,000/100,000
+[1315.6s]   embedded 45,000/100,000
+[1418.0s]   embedded 50,000/100,000
+[1515.5s]   embedded 55,000/100,000
+[1618.1s]   embedded 60,000/100,000
+[1715.0s]   embedded 65,000/100,000
+[1806.4s]   embedded 70,000/100,000
+[1909.2s]   embedded 75,000/100,000
+[2012.1s]   embedded 80,000/100,000
+[3183.9s]   embedded 85,000/100,000
+[5088.4s]   embedded 90,000/100,000
+[5178.5s]   embedded 95,000/100,000
+[5268.5s]   embedded 100,000/100,000
+[5268.7s] embedded -> (100000, 384), saved /Users/ayushkumarsingh/Desktop/PROJECTS/Hackathon/recruitment-signal-fusion/redrob-ranker/artifacts/embeddings.npz
+[5268.8s] built anchors -> /Users/ayushkumarsingh/Desktop/PROJECTS/Hackathon/recruitment-signal-fusion/redrob-ranker/artifacts/jd_query.npz
+[5285.3s] computed dense + bm25 query features
+[5285.5s] saved feature store -> /Users/ayushkumarsingh/Desktop/PROJECTS/Hackathon/recruitment-signal-fusion/redrob-ranker/artifacts/features.parquet  shape=(100000, 59)
+
+PRECOMPUTE DONE. columns: 59
+dense_sim_pos  describe:
+ count    100000.000000
+mean          0.718419
+std           0.028783
+min           0.627392
+25%           0.701809
+50%           0.716224
+75%           0.731601
+max           0.927287
+Name: dense_sim_pos, dtype: float64
+WRAPPER_EXIT=0
