@@ -16,5 +16,8 @@ RUN python -c "from sentence_transformers import SentenceTransformer; \
     SentenceTransformer('BAAI/bge-small-en-v1.5')"
 
 EXPOSE 7860
+# enableXsrfProtection=false: Streamlit's file_uploader otherwise returns HTTP 403 when the
+# app is served through the Hugging Face Spaces iframe/proxy.
 CMD ["streamlit", "run", "sandbox/app.py", \
-     "--server.port=7860", "--server.address=0.0.0.0", "--server.headless=true"]
+     "--server.port=7860", "--server.address=0.0.0.0", "--server.headless=true", \
+     "--server.enableXsrfProtection=false", "--server.enableCORS=false"]
