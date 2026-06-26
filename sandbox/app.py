@@ -45,14 +45,18 @@ if up is None:
     st.info("Upload a JSONL of candidate profiles (schema = candidate_schema.json).")
     st.stop()
 
-raw = up.read().decode("utf-8")
+raw = up.read().decode("utf-8").strip()
 records = []
-for line in raw.splitlines():
-    line = line.strip()
-    if line:
-        records.append(json.loads(line))
-if len(records) == 1 and isinstance(records[0], list):
-    records = records[0]
+try:
+    # whole-file JSON: a (pretty-printed) array or a single object
+    obj = json.loads(raw)
+    records = obj if isinstance(obj, list) else [obj]
+except json.JSONDecodeError:
+    # JSONL fallback: one JSON object per line
+    for line in raw.splitlines():
+        line = line.strip()
+        if line:
+            records.append(json.loads(line))
 records = records[:100]
 cands = [Candidate.model_validate(r) for r in records]
 st.success(f"Loaded {len(cands)} candidates.")
