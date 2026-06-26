@@ -1,0 +1,63 @@
+team_name: "NullSet"
+
+primary_contact:
+  name: "Ayush Kumar Singh"
+  email: "ayushkumar1699@gmail.com"
+  phone: "TODO-+91-XXXXXXXXXX"   # REQUIRED by spec 10.2 — fill before submitting
+
+team_members:
+  - name: "Ayush Kumar Singh"
+    email: "ayushkumar1699@gmail.com"
+    role: "ML Engineer (team leader)"
+
+github_repo: "https://github.com/AyushCoder9/recruitment-signal-fusion"
+sandbox_link: "https://huggingface.co/spaces/ayushxx9/recruitment-signal-fusion"
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
+
+compute:
+  platform: "MacBook Pro M3 Pro"
+  cpu_cores: 11
+  ram_gb: 18
+  python_version: "3.12.13"
+  os: "macOS (Darwin 25.3)"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 40   # featurize ~7min + embed ~30min + label (offline, async)
+
+# Portal multi-select options: Claude / ChatGPT / Copilot / Cursor / Gemini / Other / None.
+# Honest declaration (spec 10.4 — declared use is NOT penalized).
+ai_tools_used:
+  - "Claude"                  # development assistance: architecture discussion, code generation, review
+  - "Gemini"                  # also part of the offline LLM-judge stack (2.5 flash-lite / flash)
+  - "Other"                   # offline LLM-judge labels: Cerebras gpt-oss-120b + Groq open models
+  # NB: no candidate data is sent to ANY LLM during ranking — rank.py is CPU-only, network-off.
+
+ai_usage_summary: |
+  AI tools were used for development assistance (architecture discussion, code generation, and
+  review) — the engineering, design decisions, calibration, and iteration are the team's own work.
+  Separately, a free multi-provider LLM-judge stack (Cerebras gpt-oss-120b as the workhorse, plus
+  Groq-hosted open models and Gemini 2.5) produced relevance-tier labels (0-4) for ~1,430
+  stratified candidates offline, using the job description as the exact scoring rubric; a LightGBM
+  LambdaMART ranker is distilled from those labels. NO hosted LLM is called during ranking:
+  rank.py is CPU-only and network-off; it loads precomputed embeddings, a feature store, and the
+  distilled ranker. Reasoning strings are template-based and fact-grounded (no generative model at
+  rank time), so hallucination is impossible by construction.
+
+methodology_summary: |
+  Hybrid retrieval + interpretable rubric + LLM-judge-distilled learned ranker, with
+  JD-endorsed behavioral/consistency modifiers. The decisive signal is role/function from
+  job TITLES + career history (not the skills list), which demotes keyword-stuffers and
+  off-target profiles. A LightGBM LambdaMART model is distilled from LLM-judge tier labels
+  (the JD used as the exact rubric) and blended with a transparent weighted rubric;
+  multiplicative gates floor honeypots (impossible timelines) and pure off-target functions,
+  and an availability multiplier down-weights inactive/unresponsive candidates. Sentinel -1
+  signals are treated as neutral (no history), never as low. 59 vectorized features; the
+  ranking step runs in ~40s on CPU for 100k candidates with no network.
+
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
