@@ -16,7 +16,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 TEMPLATE = os.path.join(REPO, "Idea Submission Template _ Redrob.pdf")
 FONTS = os.path.join(REPO, "assets", "fonts")
-OUT = os.path.join(REPO, "Redrob_IndiaRuns_Submission_NullSet.pdf")
+OUT = os.path.join(REPO, "team_nullset_idea.pdf")
 
 DARK = (0x20 / 255, 0x27 / 255, 0x29 / 255)
 BODY = (0x32 / 255, 0x3a / 255, 0x3f / 255)
@@ -270,16 +270,17 @@ def slide9(d, links):  # Submission Assets
     p.draw_rect(fitz.Rect(40, 100, 702, 150), color=WHITE, fill=WHITE)
     L = Layout(p, 120)
     L.bullet(f"GitHub repository (code + reproducible pipeline): {links['github']}")
-    L.bullet("Ranked output: submission.xlsx — top-100 (candidate_id · rank · score · reasoning).")
-    L.bullet("Live sandbox: a Dockerized Streamlit app — upload ≤100 candidates → ranked table + "
-             "per-candidate factor chart + CSV download.")
-    L.bullet(f"Demo video: {links['video']}")
+    L.bullet("Ranked output: team_nullset.xlsx / team_nullset.csv — top-100 "
+             "(candidate_id · rank · score · reasoning).")
+    L.bullet(f"Live sandbox (Hugging Face Spaces): {links['sandbox']} — a Dockerized Streamlit app: "
+             "upload ≤100 candidates → ranked table + per-candidate factor chart + CSV download.")
     L.bullet("Reproduce end-to-end: make precompute && make label && make train && make rank && make validate.")
 
 
 def main():
     results = {"composite": "", "ablation": ""}  # filled with real numbers post-training
-    links = {"github": "<add GitHub link>", "video": "<add demo video link>"}
+    links = {"github": "https://github.com/AyushCoder9/recruitment-signal-fusion",
+             "sandbox": "https://huggingface.co/spaces/ayushxx9/recruitment-signal-fusion"}
 
     d = fitz.open(TEMPLATE)
     fill_cover(d)

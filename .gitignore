@@ -25,9 +25,6 @@ Thumbs.db
 # ---- provided template (not ours to redistribute) ----
 Idea Submission Template _ Redrob.pdf
 
-# ---- generated submission deck (built locally from scripts/make_deck.py) ----
-Redrob_IndiaRuns_Submission_NullSet.pdf
-
 # ---- private demo run-sheet (not part of the public deliverable) ----
 DEMO_SCRIPT.md
 
