@@ -45,21 +45,40 @@ if up is None:
     st.info("Upload a JSONL of candidate profiles (schema = candidate_schema.json).")
     st.stop()
 
-raw = up.read().decode("utf-8").strip()
+raw = up.read().decode("utf-8", errors="replace").strip()
 records = []
-try:
-    # whole-file JSON: a (pretty-printed) array or a single object
-    obj = json.loads(raw)
-    records = obj if isinstance(obj, list) else [obj]
-except json.JSONDecodeError:
-    # JSONL fallback: one JSON object per line
-    for line in raw.splitlines():
-        line = line.strip()
-        if line:
-            records.append(json.loads(line))
-records = records[:100]
-cands = [Candidate.model_validate(r) for r in records]
-st.success(f"Loaded {len(cands)} candidates.")
+if raw:
+    try:
+        # whole-file JSON: a (pretty-printed) array or a single object
+        obj = json.loads(raw)
+        records = obj if isinstance(obj, list) else [obj]
+    except json.JSONDecodeError:
+        # JSONL fallback: one JSON object per line (skip blank/garbage lines)
+        for line in raw.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass
+records = [r for r in records if isinstance(r, dict)][:100]
+if not records:
+    st.error("No candidate records found. Upload a JSONL file (one JSON object per line) or a "
+             "JSON array of candidates matching candidate_schema.json.")
+    st.stop()
+
+cands, skipped = [], 0
+for r in records:
+    try:
+        cands.append(Candidate.model_validate(r))
+    except Exception:
+        skipped += 1
+if not cands:
+    st.error("Could not parse any candidate against the expected schema "
+             "(candidate_schema.json). Check the file format.")
+    st.stop()
+st.success(f"Loaded {len(cands)} candidates." + (f"  ({skipped} skipped — schema mismatch)" if skipped else ""))
 
 with st.spinner("Embedding + scoring on CPU..."):
     feat = build_live_features(cands, cfg)
