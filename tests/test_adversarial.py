@@ -107,6 +107,7 @@ def test_sentinel_not_penalized():
     low_eng = neutral_sentinel_profile(seed=3)
     low_eng["redrob_signals"]["recruiter_response_rate"] = 0.05
     low_eng["redrob_signals"]["offer_acceptance_rate"] = 0.05
+    low_eng["redrob_signals"]["interview_completion_rate"] = 0.05
     low_eng["redrob_signals"]["last_active_date"] = "2022-01-01"
     low_eng["candidate_id"] = "CAND_SYN_0000099"
     low_score = _score_single(low_eng, cfg, model, cols)
