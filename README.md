@@ -16,11 +16,12 @@ It fuses four signals — **dense semantic retrieval + BM25 lexical match + a tr
 + a LightGBM LambdaMART ranker distilled from a free LLM judge** — then applies multiplicative
 gates for availability, location, off-target function, and honeypots.
 
-- **Composite 0.65** (`0.50·NDCG@10 + 0.30·NDCG@50 + 0.15·MAP + 0.05·P@10`) on held-out LLM-judge labels; **NDCG@50 0.84**.
 - **Top-100 verified: 0 honeypots · 0 off-target · 0 services-only · 0 out-of-India** → disqualification-safe.
 - **Ranking step: ~40 s wall-clock / ~196 MB / CPU-only / zero network** on the full 100k (≈7.5× under the 5-minute budget).
-- **Zero-hallucination reasoning by construction** — no generative model runs at rank time.
-- **Official `validate_submission.py` → "Submission is valid."** · 24/24 tests pass · byte-identical determinism.
+- **Zero-hallucination reasoning by construction** — no generative model runs at rank time; every clause is pulled from a structured field.
+- **Official `validate_submission.py` → "Submission is valid."** · all tests pass · byte-identical determinism verified (3× reruns, identical CSV hash).
+- **Tree-SHAP attribution** per top-100 candidate — exact, not approximate, traceable to every profile field.
+- **Adversarial robustness proven** — keyword-stuffers demoted, honeypots gated, sentinel neutrality guaranteed, JSON-order invariant.
 
 ---
 
@@ -178,19 +179,24 @@ src/
   io/         schema (pydantic) · streaming loaders · config/artifact IO
   features/   semantic · role · experience · skills · company · behavioral ·
               location · consistency/honeypot · bm25 · registry
-  scoring/    rubric · ensemble · modifiers · ranker · reasoning · pipeline
-  eval/       metrics (NDCG/MAP/P@k) · tuning harness
+  scoring/    rubric · ensemble · modifiers · ranker · reasoning · pipeline · shap_contrib
+  eval/       metrics (NDCG/MAP/P@k) · tuning harness · bootstrap CI · adversarial generators
   llm/        multi-provider judge clients · prompts
-tests/        validation · features · io · metrics · reasoning  (24 tests)
-sandbox/      Streamlit app + Dockerfile (upload ≤100 -> ranked table + factor chart)
+tests/        validation · features · io · metrics · reasoning · adversarial (incl. metamorphic)
+sandbox/      Streamlit app + Dockerfile (upload ≤100 → ranked table + SHAP + compare mode)
 notebooks/    EDA
-artifacts/    feature store · labels · trained ranker · JD anchors · EDA summary
-docs/         architecture + ablation + feature-importance charts, technical report
-scripts/      deck + diagram + chart generators
-submission/   submission.csv · submission.xlsx · submission_metadata.yaml
+artifacts/    feature store · labels · trained ranker · JD anchors · EDA summary · bootstrap_ci.json
+docs/         architecture + ablation + feature-importance · sensitivity charts · MODEL_CARD · FAIRNESS · SENSITIVITY
+scripts/      deck + diagram + chart + sensitivity + fairness generators
+submission/   team_nullset.csv · team_nullset.xlsx
 ```
 
-See [`docs/REPORT.md`](docs/REPORT.md) for the full technical write-up.
+| Document | Description |
+|---|---|
+| [`docs/REPORT.md`](docs/REPORT.md) | Full technical write-up |
+| [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md) | Model card (intended use, training, eval, ethics, limitations) |
+| [`docs/FAIRNESS.md`](docs/FAIRNESS.md) | Fairness & neutrality audit (location, behavioral signals, name anonymization) |
+| [`docs/SENSITIVITY.md`](docs/SENSITIVITY.md) | Sensitivity analysis — sweep of every hand-tuned constant with composite curves |
 
 ---
 
